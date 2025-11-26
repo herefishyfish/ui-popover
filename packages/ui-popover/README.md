@@ -41,6 +41,7 @@
 * [API](#api)
 	* [Using Svelte](#using-svelte)
 	* [Using Vue](#using-vue)
+	* [Using Angular](#using-angular)
 	* [Methods](#methods)
 * [Demos and Development](#demos-and-development)
 	* [Repo Setup](#repo-setup)
@@ -86,6 +87,25 @@ Run the following command from the root of your project:
   this.$showPopover(YourInnerVueComponent, {
     props: {}
   });
+```
+
+### Using Angular
+```ts
+import { Component, inject, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NativePopover, NativePopoverModule } from '@nativescript-community/ui-popover/angular';
+import { View } from '@nativescript/core';
+
+@Component({})
+export class BasicPopoverComponent {
+  popover = inject(NativePopover);
+
+  showPopover(anchor: View) {
+    this.popover.open(PopoverContentComponent, {
+      anchor,
+      data: {}
+    });
+  }
+}
 ```
 
 ### Methods
