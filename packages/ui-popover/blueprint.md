@@ -33,6 +33,25 @@ Run the following command from the root of your project:
   });
 ```
 
+### Using Angular
+```ts
+import { Component, inject, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NativePopover, NativePopoverModule } from '{{ pkg.name }}/angular';
+import { View } from '@nativescript/core';
+
+@Component({})
+export class BasicPopoverComponent {
+  popover = inject(NativePopover);
+
+  showPopover(anchor: View) {
+    this.popover.open(PopoverContentComponent, {
+      anchor,
+      data: {}
+    });
+  }
+}
+```
+
 ### Methods
 ```ts
  interface PopoverOptions {
