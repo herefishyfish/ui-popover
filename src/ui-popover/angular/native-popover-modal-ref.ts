@@ -71,6 +71,10 @@ export class NativePopoverModalRef {
             }
         }
 
+        try {
+            (embeddedView as any).detectChanges?.();
+        } catch (e) {}
+
         // Find the first actual NativeScript view in the root nodes
         let contentView = null;
         for (const node of embeddedView.rootNodes) {
@@ -118,6 +122,10 @@ export class NativePopoverModalRef {
             }
         }
 
+        try {
+            componentRef.changeDetectorRef.detectChanges?.();
+        } catch (e) {}
+
         // Try to get the actual NativeScript view from the component
         let contentView = componentRef.location.nativeElement;
 
@@ -147,21 +155,6 @@ export class NativePopoverModalRef {
 
         if (!this._config.anchor) {
             throw new Error('Anchor view is required for popover');
-        }
-
-        // Check if anchor is properly attached to window (Android specific check)
-        if (this._config.anchor.android && !this._config.anchor.android.getWindowToken()) {
-            console.error('Anchor view is not attached to window yet');
-            // Retry after a short delay
-            setTimeout(() => {
-                if (this._config.anchor.android && this._config.anchor.android.getWindowToken()) {
-                    this._showPopover();
-                } else {
-                    console.error('Anchor view still not attached to window after retry');
-                    this.stateChanged.next({ state: 'closed' });
-                }
-            }, 200);
-            return;
         }
 
         const popoverOptions: PopoverOptions = {
