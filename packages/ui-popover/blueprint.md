@@ -35,19 +35,14 @@ Run the following command from the root of your project:
 
 ### Using Angular
 ```ts
-import { Component, inject, NO_ERRORS_SCHEMA } from '@angular/core';
-import { NativePopover, NativePopoverModule } from '{{ pkg.name }}/angular';
-import { View } from '@nativescript/core';
+import { NativePopover, NativePopoverConfig} from '{{ pkg.name }}/angular';
 
 @Component({})
 export class BasicPopoverComponent {
   popover = inject(NativePopover);
 
-  showPopover(anchor: View) {
-    this.popover.open(PopoverContentComponent, {
-      anchor,
-      data: {}
-    });
+  showPopover(config: NativePopoverConfig) {
+    this.popover.open(PopoverContentComponent, config);
   }
 }
 ```
@@ -65,10 +60,10 @@ export class BasicPopoverComponent {
 }
 ```
 
-| Name         | Return | Description                                     |
-| ------------ | ------ | ----------------------------------------------- |
-| showPopover(options: PopoverOptions)       | `void` | Programatically open the popover                 |
-| closePopover(options: PopoverOptions)      | `void` | Programatically close the popover                |
+| Name                                  | Return   | Description                       |
+| ------------------------------------- | -------- | --------------------------------- |
+| showPopover(options: PopoverOptions)  | `void` | Programatically open the popover  |
+| closePopover(options: PopoverOptions) | `void` | Programatically close the popover |
 
 {{ load:../../tools/readme/demos-and-development.md }}
 {{ load:../../tools/readme/questions.md }}
