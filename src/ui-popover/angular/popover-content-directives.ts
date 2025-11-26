@@ -1,7 +1,7 @@
-import { Directive, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { View } from '@nativescript/core';
 import { NativePopoverRef } from './popover-ref';
 import { NativePopover } from './popover-services';
-import { View } from '@nativescript/core';
 
 /**
  * Button that will close the current popover.
@@ -12,7 +12,7 @@ import { View } from '@nativescript/core';
     exportAs: 'nativePopoverClose',
     standalone: true
 })
-export class NativePopoverCloseDirective implements OnInit, OnChanges {
+export class NativePopoverCloseDirective implements OnChanges {
     /** Popover close input. */
     @Input('native-popover-close') popoverResult: any;
     @Input('nativePopoverClose') _nativePopoverClose: any;
@@ -20,10 +20,17 @@ export class NativePopoverCloseDirective implements OnInit, OnChanges {
     private _elementRef = inject(ElementRef, { optional: true });
     private _popoverService = inject(NativePopover, { optional: true });
 
-    ngOnInit() {
-        // If DI didn't provide the popover ref (template embedded views), try
-        // to locate the popover by walking up the native view parent chain and
-        // looking for the `__ng_popover_id__` marker.
+    ngOnChanges(changes: SimpleChanges) {
+        const proxiedChange = changes['_nativePopoverClose'] || changes['_nativePopoverCloseResult'];
+        if (proxiedChange) {
+            this.popoverResult = proxiedChange.currentValue;
+        }
+    }
+
+    @HostListener('tap')
+    _onButtonClick() {
+        // Resolve popoverRef for template-embedded views by walking up the
+        // native view tree and looking for the `__ng_popover_id__` marker.
         if (!this.popoverRef && this._elementRef && this._popoverService) {
             let view: any = (this._elementRef as ElementRef<View>).nativeElement.parent;
             while (view && !Object.prototype.hasOwnProperty.call(view, '__ng_popover_id__')) {
@@ -36,17 +43,7 @@ export class NativePopoverCloseDirective implements OnInit, OnChanges {
                 }
             }
         }
-    }
 
-    ngOnChanges(changes: SimpleChanges) {
-        const proxiedChange = changes['_nativePopoverClose'] || changes['_nativePopoverCloseResult'];
-        if (proxiedChange) {
-            this.popoverResult = proxiedChange.currentValue;
-        }
-    }
-
-    @HostListener('tap')
-    _onButtonClick() {
         this.popoverRef?.close(this.popoverResult);
     }
 }
